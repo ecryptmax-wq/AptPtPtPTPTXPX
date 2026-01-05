@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TongQrongin</title>
+    <style>
+        :root { --main-red: #ff0050; --bg-dark: #0a0a0a; --card-bg: #161616; }
+        body { background: var(--bg-dark); color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; }
+        
+        h1 { font-size: 1.5rem; color: var(--main-red); margin-bottom: 20px; text-align: center; }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .video-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            color: white;
+            border: 1px solid #222;
+            transition: 0.2s;
+        }
+
+        .thumb-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+
+        video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+        .play-badge {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(255, 0, 80, 0.9); border-radius: 50%; padding: 8px 12px;
+        }
+
+        .info { padding: 10px; }
+        .info h3 { margin: 0; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .pagination {
+            display: flex; justify-content: center; align-items: center;
+            margin: 30px 0; gap: 10px;
+        }
+        .btn-page {
+            background: #222; color: white; border: none; padding: 8px 15px;
+            border-radius: 5px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-page:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-page.active { background: var(--main-red); }
+    </style>
+</head>
+<body>
+
+    <h1>STREAMING PREMIUM</h1>
+
+    <div id="video-container" class="video-grid">
+        </div>
+
+    <div class="pagination">
+        <button class="btn-page" id="prevBtn" onclick="changePage(-1)">Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button class="btn-page" id="nextBtn" onclick="changePage(1)">Next</button>
+    </div>
+
+    <script>
+const DB_URL = "https://cobc-88122-default-rtdb.asia-southeast1.firebasedatabase.app/videos.json";
+    let allVideos = [];
+    const itemsPerPage = 12;
+    let currentPage = 1;
+
+async function loadFromFirebase() {
+    try {
+        const response = await fetch(DB_URL);
+        const data = await response.json();
+        if (data && typeof data === 'object') {
+            allVideos = Object.values(data).reverse();
+            renderVideos();
+        } else {
+            document.getElementById('video-container').innerHTML = '<p style="text-align:center">Belum ada video.</p>';
+        }
+    } catch (e) {
+        console.error("Gagal load data:", e);
+    }
+}
+
+    function renderVideos() {
+        const container = document.getElementById('video-container');
+        container.innerHTML = '';
+        
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedItems = allVideos.slice(start, end);
+
+        paginatedItems.forEach(vid => {
+            container.innerHTML += `
+                <a href="player.html?id=${vid.id}" class="card">
+                    <div class="thumb-box">
+                        <video preload="metadata" muted onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;">
+                            <source src="https://cdn.videy.co/${vid.id}.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-badge">▶</div>
+                    </div>
+                    <div class="info">
+                        <h3>${vid.title}</h3>
+                    </div>
+                </a>
+            `;
+        });
+
+        document.getElementById('pageInfo').innerText = `Page ${currentPage}`;
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        document.getElementById('nextBtn').disabled = end >= allVideos.length;
+    }
+
+    function changePage(step) {
+        currentPage += step;
+        renderVideos();
+        window.scrollTo(0,0);
+    }
+
+    loadFromFirebase();
+    </script>
+</body>
+</html>

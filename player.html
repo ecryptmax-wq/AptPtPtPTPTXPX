@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Now</title>
+    <script src="https://pl28405340.effectivegatecpm.com/cf/0d/3a/cf0d3ae588500218df880435e7d147c4.js"></script>
+    
+    <style>
+        body { background: #000; margin: 0; font-family: sans-serif; color: white; overflow: hidden; }
+        
+        .main-wrapper {
+            display: flex; flex-direction: column; height: 100vh; width: 100vw;
+            justify-content: center; align-items: center; position: relative;
+        }
+
+        .video-frame-container {
+            width: 100%; max-width: 1000px; aspect-ratio: 16/9; position: relative;
+            background: #111;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        #ad-gate {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 999; cursor: pointer;
+        }
+
+        .unlock-card {
+            background: #1a1a1a; padding: 25px; border-radius: 20px;
+            text-align: center; border: 1px solid #333; width: 80%; max-width: 300px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .btn-primary {
+            background: #ff0050; color: white; border-radius: 50px;
+            padding: 15px; margin-top: 15px; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 0, 80, 0.4);
+            animation: bounce 2s infinite;
+        }
+
+        #count-num { font-size: 2.5rem; display: block; margin: 10px 0; color: #ff0050; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .hidden { display: none !important; }
+        .back-btn { position: absolute; top: 15px; left: 15px; color: #888; text-decoration: none; font-size: 14px; z-index: 1000; }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <a href="index.html" class="back-btn">← Kembali</a>
+
+        <div class="video-frame-container">
+            <div id="ad-gate">
+                <div class="unlock-card">
+                    <span style="font-size: 0.8rem; opacity: 0.7; letter-spacing: 2px;">PROTECTED VIDEO</span>
+                    <span id="count-num">2</span>
+                    <div class="btn-primary">TAP TO UNLOCK</div>
+                    <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.5;">Selesaikan 2x klik untuk menonton</p>
+                </div>
+            </div>
+            <iframe id="main-iframe" allowfullscreen></iframe>
+        </div>
+    </div>
+    
+<script>
+  atOptions = {
+    'key' : '62b0a8335831d3068d83805e56b7bf1a',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/62b0a8335831d3068d83805e56b7bf1a/invoke.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const vidId = urlParams.get('id');
+        const gate = document.getElementById('ad-gate');
+        const countTxt = document.getElementById('count-num');
+
+        if(vidId) {
+            document.getElementById('main-iframe').src = `https://videy.co/v?id=${vidId}`;
+        }
+
+        // TARGET KLIK DIUBAH MENJADI 2
+        const target = 2;
+        let clicks = parseInt(localStorage.getItem('unlock_' + vidId)) || 0;
+
+        if (clicks >= target) {
+            gate.classList.add('hidden');
+        } else {
+            countTxt.innerText = target - clicks;
+        }
+
+        gate.addEventListener('click', () => {
+            clicks++;
+            localStorage.setItem('unlock_' + vidId, clicks);
+            
+            let sisa = target - clicks;
+            if (sisa > 0) {
+                countTxt.innerText = sisa;
+            } else {
+                gate.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
