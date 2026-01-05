@@ -107,8 +107,11 @@ async function loadFromFirebase() {
             container.innerHTML += `
                 <a href="player.html?id=${vid.id}" class="card">
                     <div class="thumb-box">
-                        <video preload="metadata" muted onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;">
-                            <source src="https://cdn.videy.co/${vid.id}.mp4" type="video/mp4">
+                        <video preload="metadata" muted playsinline 
+                            onmouseover="this.play()" 
+                            onmouseout="this.pause(); this.currentTime=0;"
+                            style="background: #000;">
+                            <source src="https://cdn.videy.co/${vid.id}.mp4#t=0.1" type="video/mp4">
                         </video>
                         <div class="play-badge">▶</div>
                     </div>
