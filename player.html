@@ -69,7 +69,7 @@
             <iframe id="main-iframe" allowfullscreen></iframe>
         </div>
     </div>
-    
+
 <script>
   atOptions = {
     'key' : '62b0a8335831d3068d83805e56b7bf1a',
@@ -82,36 +82,43 @@
 <script src="https://www.highperformanceformat.com/62b0a8335831d3068d83805e56b7bf1a/invoke.js"></script>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const vidId = urlParams.get('id');
-        const gate = document.getElementById('ad-gate');
-        const countTxt = document.getElementById('count-num');
+const urlParams = new URLSearchParams(window.location.search);
+    const vidId = urlParams.get('id');
+    const gate = document.getElementById('ad-gate');
+    const countTxt = document.getElementById('count-num');
+    const iframe = document.getElementById('main-iframe');
 
-        if(vidId) {
-            document.getElementById('main-iframe').src = `https://videy.co/v?id=${vidId}`;
-        }
+    const directLink = "https://www.effectivegatecpm.com/rqu57sna?key=60dd4fa99feda114274044f4a7bb3175";
 
-        // TARGET KLIK DIUBAH MENJADI 2
-        const target = 2;
-        let clicks = parseInt(localStorage.getItem('unlock_' + vidId)) || 0;
+    if(vidId) {
+        iframe.src = `https://videy.co/v?id=${vidId}`;
+    }
 
-        if (clicks >= target) {
-            gate.classList.add('hidden');
+    const target = 2;
+    let clicks = parseInt(localStorage.getItem('unlock_' + vidId)) || 0;
+
+    if (clicks >= target) {
+        gate.classList.add('hidden');
+        iframe.style.pointerEvents = "auto";
+    } else {
+        countTxt.innerText = target - clicks;
+        iframe.style.pointerEvents = "none";
+    }
+
+    gate.addEventListener('click', (e) => {
+        window.open(directLink, '_blank');
+
+        clicks++;
+        localStorage.setItem('unlock_' + vidId, clicks);
+        
+        let sisa = target - clicks;
+        if (sisa > 0) {
+            countTxt.innerText = sisa;
         } else {
-            countTxt.innerText = target - clicks;
+            gate.classList.add('hidden');
+            iframe.style.pointerEvents = "auto";
         }
-
-        gate.addEventListener('click', () => {
-            clicks++;
-            localStorage.setItem('unlock_' + vidId, clicks);
-            
-            let sisa = target - clicks;
-            if (sisa > 0) {
-                countTxt.innerText = sisa;
-            } else {
-                gate.classList.add('hidden');
-            }
-        });
+    });
     </script>
 </body>
 </html>
